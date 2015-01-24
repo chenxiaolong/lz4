@@ -16,6 +16,7 @@ ENDIF()
 
 option(BUILD_TOOLS "Build the command line tools" ON)
 option(BUILD_LIBS  "Build the libraries in addition to the tools" OFF)
+option(LZ4_INSTALL "Install the built tools and/or libraries" ON)
 
 if(UNIX AND BUILD_LIBS)
     if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
@@ -35,9 +36,13 @@ endif()
 if(BUILD_TOOLS)
     add_executable(lz4 ${LZ4_SRCS})
     set_target_properties(lz4 PROPERTIES COMPILE_DEFINITIONS DISABLE_LZ4C_LEGACY_OPTIONS)
-    install(TARGETS lz4 RUNTIME DESTINATION "bin/")
+    if(LZ4_INSTALL)
+        install(TARGETS lz4 RUNTIME DESTINATION "bin/")
+    endif()
     add_executable(lz4c ${LZ4_SRCS})
-    install(TARGETS lz4c RUNTIME DESTINATION "bin/")
+    if(LZ4_INSTALL)
+        install(TARGETS lz4c RUNTIME DESTINATION "bin/")
+    endif()
 endif()
 
 if(BUILD_LIBS)    
@@ -48,16 +53,18 @@ if(BUILD_LIBS)
     SOVERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
     )
         
-    install(TARGETS liblz4
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    )
+    if(LZ4_INSTALL)
+        install(TARGETS liblz4
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        )
 
-    install(FILES
-    ${LZ4_DIR}/lz4.h
-    ${LZ4_DIR}/lz4hc.h
-    DESTINATION include
-    )
+        install(FILES
+        ${LZ4_DIR}/lz4.h
+        ${LZ4_DIR}/lz4hc.h
+        DESTINATION include
+        )
+    endif()
     
     if(BUILD_TOOLS)
         target_link_libraries(lz4 liblz4)
