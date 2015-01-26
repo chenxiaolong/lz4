@@ -76,7 +76,9 @@ endif()
 #warnings
 
 ADD_DEFINITIONS("-Wall")
-ADD_DEFINITIONS("-Wextra")
+if(CMAKE_COMPILER_IS_GNUCXX)
+    ADD_DEFINITIONS("-Wextra")
+endif()
 ADD_DEFINITIONS("-Wundef")
 ADD_DEFINITIONS("-Wshadow")
 ADD_DEFINITIONS("-Wcast-align")
